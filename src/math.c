@@ -457,7 +457,7 @@ any doBitXor(any ex) {
 // (sqrt 'num ['flg|num]) -> num
 any doSqrt(any ex) {
    any x;
-	long m, n, r;
+	long long m, n, r;
 
    x = cdr(ex);
    if (isNil(x = EVAL(car(x))))
@@ -468,7 +468,7 @@ any doSqrt(any ex) {
    x = cddr(ex);
    if (isNum(x = EVAL(car(x))))
       n *= unBox(x);
-	m = 1L << BITS-4;
+	m = (long long)1 << BITS-4;
 	r = 0;
 	do {
 		if ((r += m) > n)

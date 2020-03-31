@@ -15,10 +15,10 @@
 #define CELLS (1024*1024/sizeof(cell))
 #endif
 
-#define WORD ((int)sizeof(long))
+#define WORD ((int)sizeof(int64_t))
 #define BITS (8*WORD)
 
-typedef unsigned long word;
+typedef unsigned long long word;
 typedef unsigned char byte;
 typedef unsigned char *ptr;
 
@@ -88,7 +88,7 @@ typedef struct catchFrame {
 #define Free(p)         ((p)->car=Avail, Avail=(p))
 
 /* Number access */
-#define num(x)          ((long)(x))
+#define num(x)          ((int64_t)(x))
 #define txt(n)          ((any)(num(n)<<1|1))
 #define box(n)          ((any)(num(n)<<2|2))
 #define unBox(n)        (num(n)>>2)
