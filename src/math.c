@@ -264,7 +264,7 @@ any doMul(any ex) {
 // (*/ 'num1 ['num2 ..] 'num3) -> num
 any doMulDiv(any ex) {
    any x, y;
-   long long n;
+   int64_t n;
 
    x = cdr(ex);
    if (isNil(y = EVAL(car(x))))
@@ -457,7 +457,7 @@ any doBitXor(any ex) {
 // (sqrt 'num ['flg|num]) -> num
 any doSqrt(any ex) {
    any x;
-	long long m, n, r;
+	int64_t m, n, r;
 
    x = cdr(ex);
    if (isNil(x = EVAL(car(x))))
@@ -468,7 +468,7 @@ any doSqrt(any ex) {
    x = cddr(ex);
    if (isNum(x = EVAL(car(x))))
       n *= unBox(x);
-	m = (long long)1 << BITS-4;
+	m = (int64_t)1 << BITS-4;
 	r = 0;
 	do {
 		if ((r += m) > n)

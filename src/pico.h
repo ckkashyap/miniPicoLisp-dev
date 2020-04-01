@@ -18,7 +18,7 @@
 #define WORD ((int)sizeof(int64_t))
 #define BITS (8*WORD)
 
-typedef unsigned long long word;
+typedef uint64_t word;
 typedef unsigned char byte;
 typedef unsigned char *ptr;
 

@@ -64,7 +64,7 @@ void heapAlloc(void) {
    heap *h;
    cell *p;
 
-   h = (heap*)((long long)alloc(NULL, sizeof(heap) + sizeof(cell)) + (sizeof(cell)-1) & ~(sizeof(cell)-1));
+   h = (heap*)((int64_t)alloc(NULL, sizeof(heap) + sizeof(cell)) + (sizeof(cell)-1) & ~(sizeof(cell)-1));
    h->next = Heaps,  Heaps = h;
    p = h->cells + CELLS-1;
    do
@@ -295,7 +295,7 @@ long compare(any x, any y) {
          return -1;
       a = name(x),  b = name(y);
       if (a == txt(0) && b == txt(0))
-         return (long long)x - (long long)y;
+         return (int64_t)x - (int64_t)y;
       if ((c = getByte1(&i, &w, &a)) == (d = getByte1(&j, &v, &b)))
          do
             if (c == 0)
