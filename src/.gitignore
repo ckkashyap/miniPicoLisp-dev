@@ -1,0 +1,6 @@
+mingw32/*
+mingw64/*
+*.d
+*.zip
+*.o
+*.exe
