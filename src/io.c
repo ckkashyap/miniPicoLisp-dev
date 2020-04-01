@@ -282,7 +282,7 @@ static any rdList(void) {
 static any anonymous(any s) {
    int c, i;
    word w;
-   uint64_t n;
+   UNSIGNED_WORD_TYPE n;
    heap *h;
 
    if ((c = getByte1(&i, &w, &s)) != '$')

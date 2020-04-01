@@ -264,7 +264,7 @@ any doMul(any ex) {
 // (*/ 'num1 ['num2 ..] 'num3) -> num
 any doMulDiv(any ex) {
    any x, y;
-   int64_t n;
+   WORD_TYPE n;
 
    x = cdr(ex);
    if (isNil(y = EVAL(car(x))))
@@ -457,7 +457,7 @@ any doBitXor(any ex) {
 // (sqrt 'num ['flg|num]) -> num
 any doSqrt(any ex) {
    any x;
-	int64_t m, n, r;
+	WORD_TYPE m, n, r;
 
    x = cdr(ex);
    if (isNil(x = EVAL(car(x))))
@@ -468,7 +468,7 @@ any doSqrt(any ex) {
    x = cddr(ex);
    if (isNum(x = EVAL(car(x))))
       n *= unBox(x);
-	m = (int64_t)1 << BITS-4;
+	m = (WORD_TYPE)1 << BITS-4;
 	r = 0;
 	do {
 		if ((r += m) > n)
@@ -482,7 +482,7 @@ any doSqrt(any ex) {
 	return box(r);
 }
 
-static uint64_t Seed;
+static UNSIGNED_WORD_TYPE Seed;
 #define hi(t)     (word)((t) >> 32)
 
 // (seed 'num) -> num

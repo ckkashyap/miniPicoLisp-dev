@@ -11,14 +11,19 @@
 #include <setjmp.h>
 #include <stdint.h>
 
+#ifndef WORD_TYPE
+#define WORD_TYPE int64_t
+#define UNSIGNED_WORD_TYPE uint64_t
+#endif
+
 #ifndef CELLS
 #define CELLS (1024*1024/sizeof(cell))
 #endif
 
-#define WORD ((int)sizeof(int64_t))
+#define WORD ((int)sizeof(WORD_TYPE))
 #define BITS (8*WORD)
 
-typedef uint64_t word;
+typedef UNSIGNED_WORD_TYPE word;
 typedef unsigned char byte;
 typedef unsigned char *ptr;
 
@@ -88,7 +93,7 @@ typedef struct catchFrame {
 #define Free(p)         ((p)->car=Avail, Avail=(p))
 
 /* Number access */
-#define num(x)          ((int64_t)(x))
+#define num(x)          ((WORD_TYPE)(x))
 #define txt(n)          ((any)(num(n)<<1|1))
 #define box(n)          ((any)(num(n)<<2|2))
 #define unBox(n)        (num(n)>>2)
