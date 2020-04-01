@@ -1,6 +1,6 @@
 @echo off
-rem set MINGW=mingw32
-set MINGW=mingw64
+set MINGW=mingw32
+rem set MINGW=mingw64
 
 if not exist %MINGW% (
     if not exist %MINGW%.zip powershell invoke-webrequest "https://github.com/ckkashyap/mingw/blob/master/%MINGW%-03-29-2020.zip?raw=true" -outfile %MINGW%.zip
