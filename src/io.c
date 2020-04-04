@@ -1038,3 +1038,23 @@ any doPrintln(any x) {
 any doFlush(any ex __attribute__((unused))) {
    return fflush(OutFile)? Nil : T;
 }
+
+any doRd(any x) {
+
+   x = cdr(x),  x = EVAL(car(x));
+    if(isNum(x))
+    {
+        int N = unBox(x);
+        long ACC = 0;
+        int MUL = 1 << ((N-1) * 8);
+
+        for(int i=0; i<N; i++)
+        {
+            Env.get();
+            ACC += (Chr * MUL);
+            MUL>>=8;
+        }
+        return box(ACC);
+    }
+    return Nil;
+}
