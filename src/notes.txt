@@ -1,0 +1,3 @@
+Things work as long as we dont change long in sym.c to int64_t!
+
+Also, we must ensure that gensym uses int64_t as well
