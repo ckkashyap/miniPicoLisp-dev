@@ -90,7 +90,7 @@ void rdOpen(any ex, any x, inFrame *f) {
             openErr(ex, nm);
          fseek(f->fp, 0L, SEEK_SET);
       }
-      else if (!(f->fp = fopen(nm, "r")))
+      else if (!(f->fp = fopen(nm, "rb")))
          openErr(ex, nm);
    }
 }
