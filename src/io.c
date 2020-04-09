@@ -484,7 +484,7 @@ any doRead(any ex) {
 }
 
 // (peek) -> sym
-any doPeek(any ex __attribute__((unused))) {
+any doPeek(any ex) {
    if (!Chr)
       Env.get();
    return Chr<0? Nil : mkChar(Chr);
@@ -531,7 +531,7 @@ any doSkip(any x) {
 }
 
 // (eol) -> flg
-any doEol(any ex __attribute__((unused))) {
+any doEol(any ex) {
    return InFile && Chr=='\n' || Chr<=0? T : Nil;
 }
 
@@ -616,7 +616,6 @@ any doTill(any ex) {
       if (!Chr)
          Env.get();
       if (Chr < 0 || strchr(buf,Chr)){
-         free(buf);
          return Nil;
       }
       x = cddr(ex);
@@ -1057,7 +1056,7 @@ any doPrintln(any x) {
 }
 
 // (flush) -> flg
-any doFlush(any ex __attribute__((unused))) {
+any doFlush(any ex) {
    return fflush(OutFile)? Nil : T;
 }
 
