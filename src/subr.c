@@ -528,7 +528,8 @@ any doDelq(any ex) {
 any doReplace(any x) {
    any y;
    int i, n = length(cdr(x = cdr(x))) + 1 & ~1;
-   cell c1, c2, c[n];
+   cell c1, c2;
+   cell *c = (cell*)malloc(sizeof(cell) * (n));
 
    if (!isCell(data(c1) = EVAL(car(x))))
       return data(c1);
@@ -551,6 +552,7 @@ any doReplace(any x) {
    }
    cdr(y) = data(c1);
    drop(c1);
+   free(c);
    return data(c2);
 }
 
@@ -566,10 +568,13 @@ any doStrip(any x) {
 any doSplit(any x) {
    any y;
    int i, n = length(cdr(x = cdr(x)));
-   cell c1, c[n], res, sub;
+   cell c1, res, sub;
+   cell *c = (cell*)malloc(sizeof(cell) * (n));
 
-   if (!isCell(data(c1) = EVAL(car(x))))
+   if (!isCell(data(c1) = EVAL(car(x)))){
+       free(c);
       return data(c1);
+   }
    Save(c1);
    for (i = 0; i < n; ++i)
       x = cdr(x),  Push(c[i], EVAL(car(x)));
@@ -594,9 +599,12 @@ spl1: ;
    } while (isCell(data(c1) = cdr(data(c1))));
    y = cons(data(sub), Nil);
    drop(c1);
-   if (isNil(x))
+   if (isNil(x)) {
+       free(c);
       return y;
+   }
    cdr(x) = y;
+   free(c);
    return data(res);
 }
 
@@ -745,7 +753,8 @@ any doTail(any ex) {
 // (stem 'lst 'any ..) -> lst
 any doStem(any x) {
    int i, n = length(cdr(x = cdr(x)));
-   cell c1, c[n];
+   cell c1;
+   cell *c = (cell*)malloc(sizeof(cell) * (n));
 
    Push(c1, EVAL(car(x)));
    for (i = 0; i < n; ++i)
@@ -757,6 +766,7 @@ any doStem(any x) {
             break;
          }
    }
+   free(c);
    return Pop(c1);
 }
 
