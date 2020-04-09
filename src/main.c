@@ -17,12 +17,14 @@ any Intern[2], Transient[2];
 any ApplyArgs, ApplyBody;
 
 /* ROM Data */
-any const __attribute__ ((__aligned__(2*WORD))) Rom[] = {
+//any const __attribute__ ((__aligned__(2*WORD))) Rom[] = {
+any const Rom[] = {
    #include "rom.d"
 };
 
 /* RAM Symbols */
-any __attribute__ ((__aligned__(2*WORD))) Ram[] = {
+//any __attribute__ ((__aligned__(2*WORD))) Ram[] = {
+any Ram[] = {
    #include "ram.d"
 };
 
@@ -569,12 +571,12 @@ any xSym(any x) {
 }
 
 // (args) -> flg
-any doArgs(any ex __attribute__((unused))) {
+any doArgs(any ex) {
    return Env.next > 0? T : Nil;
 }
 
 // (next) -> any
-any doNext(any ex __attribute__((unused))) {
+any doNext(any ex) {
    if (Env.next > 0)
       return data(Env.arg[--Env.next]);
    if (Env.next == 0)
@@ -698,7 +700,7 @@ any doArgv(any ex) {
 }
 
 // (opt) -> sym
-any doOpt(any ex __attribute__((unused))) {
+any doOpt(any ex) {
    return *AV && strcmp(*AV,"-")? mkStr(*AV++) : Nil;
 }
 
