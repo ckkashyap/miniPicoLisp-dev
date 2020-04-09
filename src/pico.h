@@ -357,3 +357,10 @@ static inline any run(any x) {
    val(At) = Pop(at);
    return y;
 }
+
+static inline bindFrame *allocFrame(int l)
+{
+    int s1 = bindFrameSize;
+    int s2 = (l - 1) * bindSize;
+    return (bindFrame*)malloc(s1 + s2);
+};

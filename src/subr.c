@@ -1018,7 +1018,8 @@ any doMember(any x) {
 
    x = cdr(x),  Push(c1, EVAL(car(x)));
    x = cdr(x),  x = EVAL(car(x));
-   return member(Pop(c1), x) ?: Nil;
+   any m = member(Pop(c1), x);
+   return m ? m : Nil;
 }
 
 // (memq 'any 'lst) -> any
@@ -1027,7 +1028,8 @@ any doMemq(any x) {
 
    x = cdr(x),  Push(c1, EVAL(car(x)));
    x = cdr(x),  x = EVAL(car(x));
-   return memq(Pop(c1), x) ?: Nil;
+   any m = memq(Pop(c1), x);
+   return m ? m : Nil;
 }
 
 // (mmeq 'lst 'lst) -> any
@@ -1322,18 +1324,21 @@ static any fill(any x, any s) {
       return x != val(x) && (isNil(s)? x!=At && firstByte(x)=='@' : memq(x,s)!=NULL)? val(x) : NULL;
    if (car(x) == Up) {
       x = cdr(x);
-      if (!isCell(y = EVAL(car(x))))
-         return fill(cdr(x), s) ?: cdr(x);
+      if (!isCell(y = EVAL(car(x)))) {
+          any ff = fill(cdr(x), s);
+         return ff ? ff : cdr(x);
+      }
       Push(c1, y);
       while (isCell(cdr(y)))
          y = cdr(y);
-      cdr(y) = fill(cdr(x), s) ?: cdr(x);
+      any ff = fill(cdr(x), s);
+      cdr(y) =  ff ? ff : cdr(x);
       return Pop(c1);
    }
    if (y = fill(car(x), s)) {
       Push(c1,y);
       y = fill(cdr(x), s);
-      return cons(Pop(c1), y ?: cdr(x));
+      return cons(Pop(c1), y ? y : cdr(x));
    }
    if (y = fill(cdr(x), s))
       return cons(car(x), y);

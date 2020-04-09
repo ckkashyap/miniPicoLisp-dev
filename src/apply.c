@@ -4,12 +4,12 @@
 
 #include "pico.h"
 
-bindFrame *allocFrame(int l)
-{
-    int s1 = bindFrameSize;
-    int s2 = (l - 1) * bindSize;
-    return (bindFrame*)malloc(s1 + s2);
-};
+// bindFrame *allocFrame(int l)
+// {
+//     int s1 = bindFrameSize;
+//     int s2 = (l - 1) * bindSize;
+//     return (bindFrame*)malloc(s1 + s2);
+// };
 
 any apply(any ex, any foo, bool cf, int n, cell *p) {
    while (!isNum(foo)) {

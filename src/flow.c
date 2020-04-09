@@ -437,7 +437,8 @@ any doMethod(any ex) {
    x = cdr(ex),  y = EVAL(car(x));
    x = cdr(x),  x = EVAL(car(x));
    TheKey = y;
-   return method(x)? : Nil;
+   any m = method(x);
+   return m? m: Nil;
 }
 
 // (meth 'obj ..) -> any
