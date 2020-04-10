@@ -256,7 +256,7 @@ static any evMethod(any o, any expr, any x) {
    bindFrame *f = allocFrame(length(y)+3);
 
    f->link = Env.bind,  Env.bind = (bindFrame*)&f;
-   f->i = sizeof(f->bnd) / (2*sizeof(any)) - 2;
+   f->i = (bindSize * (length(y)+3)) / (2*sizeof(any)) - 2;
    f->cnt = 1,  f->bnd[0].sym = At,  f->bnd[0].val = val(At);
    while (isCell(y)) {
       f->bnd[f->cnt].sym = car(y);
