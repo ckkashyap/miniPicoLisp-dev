@@ -4,36 +4,13 @@
 
 #include "pico.h"
 
-static byte Ascii6[] = {
-   0,  2,  2,  2,  2,  2,  2,   2,   2,   2,   2,   2,   2,   2,   2,   2,
-   2,  2,  2,  2,  2,  2,  2,   2,   2,   2,   2,   2,   2,   2,   2,   2,
-   2,  1,  3,  5,  7,  9, 11,  13,  15,  17,  19,  21,  23,  25,   4,   6,
-  27, 29, 31, 33, 35, 37, 39,  41,  43,  45,  47,  49,   8,  51,  10,  53,
-  55, 57, 59, 61, 63, 65, 67,  69,  71,  73,  75,  77,  79,  81,  83,  85,
-  87, 89, 91, 93, 95, 97, 99, 101, 103, 105, 107, 109, 111, 113, 115, 117,
- 119, 12, 14, 16, 18, 20, 22,  24,  26,  28,  30,  32,  34,  36,  38,  40,
-  42, 44, 46, 48, 50, 52, 54,  56,  58,  60,  62, 121, 123, 125, 127,   0
-};
-
-static byte Ascii7[] = {
-   0, 33,  32, 34,  46, 35,  47, 36,  60,  37,  62,  38,  97,  39,  98,  40,
-  99, 41, 100, 42, 101, 43, 102, 44, 103,  45, 104,  48, 105,  49, 106,  50,
- 107, 51, 108, 52, 109, 53, 110, 54, 111,  55, 112,  56, 113,  57, 114,  58,
- 115, 59, 116, 61, 117, 63, 118, 64, 119,  65, 120,  66, 121,  67, 122,  68,
-   0, 69,   0, 70,   0, 71,   0, 72,   0,  73,   0,  74,   0,  75,   0,  76,
-   0, 77,   0, 78,   0, 79,   0, 80,   0,  81,   0,  82,   0,  83,   0,  84,
-   0, 85,   0, 86,   0, 87,   0, 88,   0,  89,   0,  90,   0,  91,   0,  92,
-   0, 93,   0, 94,   0, 95,   0, 96,   0, 123,   0, 124,   0, 125,   0, 126
-};
-
-
 int firstByte(any s) {
    int c;
 
    if (isNil(s))
       return 0;
    c = (int)(isTxt(s = name(s))? (word)s >> 1 : (word)tail(s));
-   return Ascii7[c & (c & 1? 127 : 63)];
+   return c & 127;
 }
 
 int secondByte(any s) {
@@ -42,8 +19,8 @@ int secondByte(any s) {
    if (isNil(s))
       return 0;
    c = (int)(isTxt(s = name(s))? (word)s >> 1 : (word)tail(s));
-   c >>= c & 1? 7 : 6;
-   return Ascii7[c & (c & 1? 127 : 63)];
+   c >>= c & 7;
+   return c & 127;
 }
 
 int getByte1(int *i, word *p, any *q) {
@@ -53,10 +30,8 @@ int getByte1(int *i, word *p, any *q) {
       *i = BITS-1,  *p = (word)*q >> 1,  *q = NULL;
    else
       *i = BITS,  *p = (word)tail(*q),  *q = val(*q);
-   if (*p & 1)
-      c = Ascii7[*p & 127],  *p >>= 7,  *i -= 7;
-   else
-      c = Ascii7[*p & 63],  *p >>= 6,  *i -= 6;
+
+   c = *p & 127,  *p >>= 7,  *i -= 7;
    return c;
 }
 
@@ -71,57 +46,37 @@ int getByte(int *i, word *p, any *q) {
       else
          *i = BITS,  *p = (word)tail(*q),  *q = val(*q);
    }
-   if (*p & 1) {
-      c = *p & 127,  *p >>= 7;
-      if (*i >= 7)
-         *i -= 7;
-      else if (isNum(*q)) {
-         *p = (word)*q >> 2,  *q = NULL;
-         c |= *p << *i;
-         *p >>= 7 - *i;
-         *i += BITS-9;
-      }
-      else {
-         *p = (word)tail(*q),  *q = val(*q);
-         c |= *p << *i;
-         *p >>= 7 - *i;
-         *i += BITS-7;
-      }
-      c &= 127;
-   }
-   else {
-      c = *p & 63,  *p >>= 6;
-      if (*i >= 6)
-         *i -= 6;
-      else if (!*q)
-         return 0;
-      else if (isNum(*q)) {
-         *p = (word)*q >> 2,  *q = NULL;
-         c |= *p << *i;
-         *p >>= 6 - *i;
-         *i += BITS-8;
-      }
-      else {
-         *p = (word)tail(*q),  *q = val(*q);
-         c |= *p << *i;
-         *p >>= 6 - *i;
-         *i += BITS-6;
-      }
-      c &= 63;
-   }
-   return Ascii7[c];
+
+  c = *p & 127,  *p >>= 7;
+  if (*i >= 7)
+     *i -= 7;
+  else if (isNum(*q)) {
+     *p = (word)*q >> 2,  *q = NULL;
+     c |= *p << *i;
+     *p >>= 7 - *i;
+     *i += BITS-9;
+  }
+  else {
+     *p = (word)tail(*q),  *q = val(*q);
+     c |= *p << *i;
+     *p >>= 7 - *i;
+     *i += BITS-7;
+  }
+  c &= 127;
+
+   return c;
 }
 
-any mkTxt(int c) {return txt(Ascii6[c & 127]);}
+any mkTxt(int c) {return txt(c & 127);}
 
 any mkChar(int c) {
-   return consSym(NULL, Ascii6[c & 127]);
+   return consSym(NULL, c & 127);
 }
 
 any mkChar2(int c, int d) {
-   c = Ascii6[c & 127];
-   d = Ascii6[d & 127];
-   return consSym(NULL, d << (c & 1? 7 : 6) | c);
+   c = c & 127;
+   d = d & 127;
+   return consSym(NULL, (d << 7) | c);
 }
 
 void putByte0(int *i, word *p, any *q) {
@@ -129,12 +84,14 @@ void putByte0(int *i, word *p, any *q) {
 }
 
 void putByte1(int c, int *i, word *p, any *q) {
-   *i = (*p = Ascii6[c & 127]) & 1? 7 : 6;
+   *p = c & 127;
+   *i = 7;
    *q = NULL;
 }
 
 void putByte(int c, int *i, word *p, any *q, cell *cp) {
-   int d = (c = Ascii6[c & 127]) & 1? 7 : 6;
+   int d = 7;
+   c = c & 127;
 
    if (*i != BITS)
       *p |= (word)c << *i;
