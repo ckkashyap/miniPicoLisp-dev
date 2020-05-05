@@ -63,20 +63,9 @@ static void eofErr(void)
    giveup("EOF Overrun");
 }
 
-static void addList(int *ix, char ***list, char *fmt, long x) {
-   char buf[40];
-   char name[20];
-   sprintf(name, "%s.txt",(list == &Ram) ? "RAM" : "ROM");
-   //FILE *fp = fopen(name, "a");
-
+static void addList(int *ix, char ***list, char *fmt) {
    *list = realloc(*list, (*ix + 1) * sizeof(char*));
-   if (x)
-      sprintf(buf, fmt, x);
-   char *ptr=strdup(x? buf : fmt);
-   (*list)[(*ix)++] = ptr;
-   //fprintf(fp, "%d %s", *ix, ptr);
-   //if(x)fprintf(fp, "\n");
-   //fclose(fp);
+   (*list)[(*ix)++] = strdup(fmt);
 }
 
 static int bits2encode(char c)
@@ -94,6 +83,7 @@ static void mkSym(int *ix, char ***list, char *mem, char *name, char *value)
     bool bin;
     int i, c, d;
     word w;
+    char buf[40];
 
     bin = NO;
     w = char2bits(*name++);
@@ -112,15 +102,18 @@ static void mkSym(int *ix, char ***list, char *mem, char *name, char *value)
         {
             if (bin)
             {
-                addList(&RomIx, &Rom, "(Rom+%d)", RomIx + 2);
+                sprintf(buf, "(Rom+%d)", RomIx + 2);
+                addList(&RomIx, &Rom, buf);
             }
             else
             {
-                addList(ix, list, "(Rom+%d)", RomIx + (ix == &RomIx? 3 : 1));
-                addList(ix, list, value, 0);
+                sprintf(buf, "(Rom+%d)", RomIx + (ix == &RomIx? 3 : 1));
+                addList(ix, list, buf );
+                addList(ix, list, value);
                 bin = YES;
             }
-            addList(&RomIx, &Rom, "0x%lx", w);
+            sprintf(buf, "0x%lx", w);
+            addList(&RomIx, &Rom, buf);
             w = c >> Bits - i;
             i -= Bits;
         }
@@ -132,26 +125,32 @@ static void mkSym(int *ix, char ***list, char *mem, char *name, char *value)
     {
         if (i <= (Bits-2))
         {
-            addList(&RomIx, &Rom, "0x%lx", box(w));
+            sprintf(buf,  "0x%lx", box(w));
+            addList(&RomIx, &Rom, buf);
         }
         else
         {
-            addList(&RomIx, &Rom, "(Rom+%d)", RomIx + 2);
-            addList(&RomIx, &Rom, "0x%lx", w);
-            addList(&RomIx, &Rom, "2", 0);
+            sprintf(buf, "(Rom+%d)", RomIx + 2);
+            addList(&RomIx, &Rom, buf);
+            sprintf(buf,  "0x%lx", w);
+            addList(&RomIx, &Rom, buf);
+            addList(&RomIx, &Rom, "2");
         }
     }
     else if (i > Bits-1)
     {
-        addList(ix, list, "(Rom+%d)", RomIx + (ix == &RomIx? 3 : 1));
-        addList(ix, list, value, 0);
-        addList(&RomIx, &Rom, "0x%lx", w);
-        addList(&RomIx, &Rom, "2", 0);
+        sprintf(buf, "(Rom+%d)", RomIx + (ix == &RomIx? 3 : 1));
+        addList(ix, list, buf);
+        addList(ix, list, value);
+        sprintf(buf,  "0x%lx", w);
+        addList(&RomIx, &Rom, buf);
+        addList(&RomIx, &Rom, "2");
     }
     else
     {
-        addList(ix, list, "0x%lx", txt(w));
-        addList(ix, list, value, 0);
+        sprintf(buf,  "0x%lx", txt(w));
+        addList(ix, list, buf);
+        addList(ix, list, value);
     }
 }
 
@@ -173,8 +172,8 @@ static int cons(int x, int y) {
    for (i = 0; i < RomIx;  i += 2)
       if (strcmp(car, Rom[i]) == 0  &&  strcmp(cdr, Rom[i+1]) == 0)
          return i << 2;
-   addList(&RomIx, &Rom, car, 0);
-   addList(&RomIx, &Rom, cdr, 0);
+   addList(&RomIx, &Rom, car);
+   addList(&RomIx, &Rom, cdr);
    return ix << 2;
 }
 
@@ -256,14 +255,22 @@ static int skip(void)
 /* Test for escaped characters */
 static bool testEsc(void) {
    for (;;) {
-      if (Chr < 0)
-         return NO;
-      if (Chr != '\\')
-         return YES;
-      if (Chr = getchar(), Chr != '\n')
-         return YES;
+
+      if (Chr < 0) return NO;
+
+      if (Chr != '\\') return YES;
+
+      Chr = getchar();
+
+      printf("\\n = %d\n", '\n');
+
+      if (Chr != '\n') return YES;
+
+      // This does not make sense
       do
+      {
          Chr = getchar();
+      }
       while (Chr == ' '  ||  Chr == '\t');
    }
 }
@@ -446,14 +453,14 @@ int main(int ac, char *av[]) {
             print(buf, read0(YES));
             ix = RomIx;
             if (x > 0) {
-               addList(&RomIx, &Rom, Rom[x-1], 0);
-               addList(&RomIx, &Rom, buf, 0);
+               addList(&RomIx, &Rom, Rom[x-1]);
+               addList(&RomIx, &Rom, buf);
                print(buf, ix << 2);
                Rom[x-1] = strdup(buf);
             }
             else {
-               addList(&RomIx, &Rom, Ram[-x-1], 0);
-               addList(&RomIx, &Rom, buf, 0);
+               addList(&RomIx, &Rom, Ram[-x-1]);
+               addList(&RomIx, &Rom, buf);
                print(buf, ix << 2);
                Ram[-x-1] = strdup(buf);
             }
