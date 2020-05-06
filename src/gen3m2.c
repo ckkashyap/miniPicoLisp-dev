@@ -78,7 +78,7 @@ static int char2bits(char c)
     return Ascii6[c & 127];
 }
 
-static void mkSym(int *ix, char ***list, char *mem, char *name, char *value)
+static void mkSym(int *ix, char ***list, char *name, char *value)
 {
     bool bin;
     int i, c, d;
@@ -180,14 +180,14 @@ static int cons(int x, int y) {
 static int romSym(char *name, char *value) {
    int ix = RomIx;
 
-   mkSym(&RomIx, &Rom, "(Rom+%d)", name, value);
+   mkSym(&RomIx, &Rom, name, value);
    return ix + 1 << 2;
 }
 
 static int ramSym(char *name, char *value) {
    int ix = RamIx;
 
-   mkSym(&RamIx, &Ram, "(Ram+%d)", name, value);
+   mkSym(&RamIx, &Ram, name, value);
    return -(ix + 1) << 2;
 }
 
@@ -482,3 +482,14 @@ int main(int ac, char *av[]) {
    }
    return 0;
 }
+
+
+/*
+
+   mkSym has the unused parameter  *mem
+
+   mkSym > Bits-1 is actually == Bits
+
+
+
+*/
