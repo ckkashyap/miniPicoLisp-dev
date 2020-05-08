@@ -19,6 +19,8 @@ typedef enum {NO,YES} bool;
 #define T      (5 << 2)
 #define Quote  (7 << 2)
 
+#define Zero "2"
+
 static int Bits, Chr, RomIx, RamIx;
 static char **Rom, **Ram;
 static char Token[1024];
@@ -134,7 +136,7 @@ static void mkSym(int *ix, char ***list, char *name, char *value)
             addList(&RomIx, &Rom, buf);
             sprintf(buf,  "0x%lx", w);
             addList(&RomIx, &Rom, buf);
-            addList(&RomIx, &Rom, "2");
+            addList(&RomIx, &Rom, Zero);
         }
     }
     else if (i > Bits-1)
@@ -144,7 +146,7 @@ static void mkSym(int *ix, char ***list, char *name, char *value)
         addList(ix, list, value);
         sprintf(buf,  "0x%lx", w);
         addList(&RomIx, &Rom, buf);
-        addList(&RomIx, &Rom, "2");
+        addList(&RomIx, &Rom, Zero);
     }
     else
     {
