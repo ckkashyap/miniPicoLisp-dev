@@ -4,3 +4,8 @@ mingw64/*
 *.zip
 *.o
 *.exe
+*.obj
+*.dll
+*.pdb
+*.ilk
+*.lib

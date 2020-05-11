@@ -307,3 +307,8 @@ yoke {doYoke}
 zap {doZap}
 zero {doZero}
 rd {doRd}
+do2 {doDo2}
+sdl {doSDL}
+sdlLine {doSDLLine}
+sdlClear {doSDLClear}
+sdlSwap {doSDLSwap}
