@@ -4,27 +4,37 @@
 typedef void (*ACTION)(void);
 SDL_Renderer* renderer = NULL;
 
-__declspec(dllexport) int Clear()
+#ifdef _MSC_VER // This identifies Microsft C compiler
+#define DLL_EXPORT __declspec(dllexport) 
+#else
+#define DLL_EXPORT
+#endif
+
+DLL_EXPORT int SDL_GLUE_Clear()
 {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
     return 0;
 }
 
-__declspec(dllexport) int Swap()
+DLL_EXPORT int SDL_GLUE_Swap()
 {
     SDL_RenderPresent(renderer);
     return 0;
 }
 
-__declspec(dllexport) int DrawLine(int x1, int y1, int x2, int y2)
+DLL_EXPORT int SDL_GLUE_Color(int r, int g, int b)
+{
+    SDL_SetRenderDrawColor(renderer, r, g, b, SDL_ALPHA_OPAQUE);
+    return 0;
+}
+
+DLL_EXPORT int SDL_GLUE_DrawLine(int x1, int y1, int x2, int y2)
 {
     SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
     return 0;
 }
 
-__declspec(dllexport) int glue(int width, int height, ACTION a)
+DLL_EXPORT int SDL_GLUE_Init(int width, int height, ACTION action)
 {
     if (SDL_Init(SDL_INIT_VIDEO) == 0) {
         SDL_Window* window = NULL;
@@ -34,16 +44,7 @@ __declspec(dllexport) int glue(int width, int height, ACTION a)
 
             while (!done) {
                 SDL_Event event;
-
-                // SDL_RenderClear(renderer);
-                // SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-                // SDL_RenderDrawLine(renderer, 320, 200, 300, 240);
-                // SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-                // SDL_RenderDrawLine(renderer, 300, 240, 340, 240);
-                // SDL_SetRenderDrawColor(renderer, 0, 0, 255, SDL_ALPHA_OPAQUE);
-                // SDL_RenderDrawLine(renderer, 340, 240, 320, 200);
-                // SDL_RenderPresent(renderer);
-                a();
+                action();
 
                 while (SDL_PollEvent(&event)) {
                     if (event.type == SDL_QUIT) {

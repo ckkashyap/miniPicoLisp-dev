@@ -1,0 +1,15 @@
+(de render ()
+    (sdlColor 0 0 0)
+    (sdlClear)
+    (sdlColor 255 255 0)
+    (sdlLine 10 10 200 200)
+    (sdlLine 200 200 300 200)
+    (for I 500
+         (if (= 0 (% I 10)) (sdlColor 255 255 255) (sdlColor 0 0 0))
+         (sdlLine I 200 I 400)
+     )
+
+    (sdlSwap)
+)
+(sdl 500 500 render)
+(bye)
