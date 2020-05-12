@@ -31,6 +31,9 @@ int getIntParam(any x)
     {
         return unBox(val(x));
     }
+    printf("CHECK OUT - ");
+    print(x);
+    printf("\n");
     return 100;
 }
 
