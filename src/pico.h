@@ -15,10 +15,10 @@
 #define CELLS (1024*1024/sizeof(cell))
 #endif
 
-#define WORD ((int)sizeof(long))
+#define WORD ((int)sizeof(long long))
 #define BITS (8*WORD)
 
-typedef unsigned long word;
+typedef unsigned long long word;
 typedef unsigned char byte;
 typedef unsigned char *ptr;
 
@@ -95,7 +95,7 @@ typedef struct catchFrame {
 #define Free(p)         ((p)->car=Avail, Avail=(p))
 
 /* Number access */
-#define num(x)          ((long)(x))
+#define num(x)          ((long long)(x))
 #define txt(n)          ((any)(num(n)<<1|1))
 #define box(n)          ((any)(num(n)<<2|2))
 #define unBox(n)        (num(n)>>2)
@@ -177,13 +177,13 @@ void argError(any,any);
 void atomError(any,any);
 void begString(void);
 void brkLoad(any);
-int bufNum(char[BITS/2],long);
+int bufNum(char[BITS/2],long long);
 int bufSize(any);
 void bufString(any,char*);
 void bye(int);
 void pairError(any,any);
 any circ(any);
-long compare(any,any);
+long long compare(any,any);
 any cons(any,any);
 any consName(word,any);
 any consSym(any,word);
@@ -193,7 +193,7 @@ bool equal(any,any);
 void err(any,any,char*,...);
 any evExpr(any,any);
 any evList(any);
-long evNum(any,any);
+long long evNum(any,any);
 any evSym(any);
 void execError(char*);
 int firstByte(any);
@@ -220,7 +220,7 @@ int numBytes(any);
 void numError(any,any);
 any numToSym(any,int,int,int);
 void outName(any);
-void outNum(long);
+void outNum(long long);
 void outString(char*);
 void pack(any,int*,word*,any*,cell*);
 int pathSize(any);
@@ -250,7 +250,7 @@ void unintern(any,any[2]);
 void unwind (catchFrame*);
 void varError(any,any);
 void wrOpen(any,any,outFrame*);
-long xNum(any,any);
+long long xNum(any,any);
 any xSym(any);
 
 /* List element access */
@@ -268,7 +268,7 @@ static inline any nth(int n, any x) {
 
 static inline any getn(any x, any y) {
    if (isNum(x)) {
-      long n = unBox(x);
+      long long n = unBox(x);
 
       if (n < 0) {
          while (++n)

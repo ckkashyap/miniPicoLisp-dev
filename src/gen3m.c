@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef unsigned long word;
+typedef unsigned long long word;
 typedef unsigned char byte;
 
 #undef bool
@@ -58,7 +58,7 @@ static void eofErr(void) {
    giveup("EOF Overrun");
 }
 
-static void addList(int *ix, char ***list, char *fmt, long x) {
+static void addList(int *ix, char ***list, char *fmt, long long x) {
    char buf[40];
 
    *list = realloc(*list, (*ix + 1) * sizeof(char*));
@@ -87,7 +87,7 @@ static void mkSym(int *ix, char ***list, char *mem, char *name, char *value) {
             addList(ix, list, value, 0);
             bin = YES;
          }
-         addList(&RomIx, &Rom, "0x%lx", w);
+         addList(&RomIx, &Rom, "0x%llx", w);
          w = c >> Bits - i;
          i -= Bits;
       }
@@ -95,21 +95,21 @@ static void mkSym(int *ix, char ***list, char *mem, char *name, char *value) {
    }
    if (bin) {
       if (i <= (Bits-2))
-         addList(&RomIx, &Rom, "0x%lx", box(w));
+         addList(&RomIx, &Rom, "0x%llx", box(w));
       else {
          addList(&RomIx, &Rom, "(Rom+%d)", RomIx + 2);
-         addList(&RomIx, &Rom, "0x%lx", w);
+         addList(&RomIx, &Rom, "0x%llx", w);
          addList(&RomIx, &Rom, "2", 0);
       }
    }
    else if (i > Bits-1) {
       addList(ix, list, "(Rom+%d)", RomIx + (ix == &RomIx? 3 : 1));
       addList(ix, list, value, 0);
-      addList(&RomIx, &Rom, "0x%lx", w);
+      addList(&RomIx, &Rom, "0x%llx", w);
       addList(&RomIx, &Rom, "2", 0);
    }
    else {
-      addList(ix, list, "0x%lx", txt(w));
+      addList(ix, list, "0x%llx", txt(w));
       addList(ix, list, value, 0);
    }
 }
